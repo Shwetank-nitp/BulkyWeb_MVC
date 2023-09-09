@@ -32,8 +32,16 @@
     </style>
 </head>
 <body>
-    <h1>Category List</h1>
     <div class="container">
+        <div class="row pt-4">
+            <div class="col-6 text-primary"><h1>Category List</h1></div>
+            <div class="col-6 text-end">
+                <form class="d-flex" method="get" asp-controller="Category" asp-action="Search">
+                    <input class="form-control me-sm-2" type="search" placeholder="Search" name="searchTerm">
+                    <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
+                </form>
+            </div>
+        </div>
     <table class="table table-bordered table-striped">
         <thead>
             <tr>
@@ -51,14 +59,18 @@
             }
         </tbody>
     </table>
-    <div class="row pt-4">
+        @if (Model.Count == 0)
+        {
+            <h2 class="text-center text-primary">Error: 404 <i class="bi bi-binoculars"></i></h2>
+        }
+        <div class="row pt-4">
         <div class="col-6"></div>
         <div class="col-6 text-end">
-            <a class="container" asp-controller="Category" asp-action="Create">
-                    <button type="button" class="btn btn-primary">
+            
+                    <button type="button" class="btn btn-primary" asp-controller="Category"
+                    asp-action="Create">
                         <i class="bi bi-database-add"></i> Add New
                     </button>
-            </a>
         </div>
     </div>
     </div>

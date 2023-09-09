@@ -11,6 +11,7 @@ namespace BulkyWeb.Controllers
         {
             _context = db;
         }
+
         public IActionResult Index()
         {
             List<Category> categories = _context.Categories.ToList();
@@ -20,5 +21,13 @@ namespace BulkyWeb.Controllers
         {
             return View();
         }
+        public IActionResult Search(string searchTerm)
+        {
+            List<Category> categories = _context.Categories
+                .Where(c => c.Name.Contains(searchTerm))
+                .ToList();
+            return View("Index", categories);
+        }
+
     }
 }
