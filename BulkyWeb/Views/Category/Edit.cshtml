@@ -1,9 +1,10 @@
 ﻿@model Category
 
-<form class="post" method="post" action="/Category/Create">
+<form class="post" method="post" action="/Category/Edit">
+    <input asp-for="ID" type="hidden"/>
     <div class="border p-3 mt-4">
         <div class="row pd-4">
-            <h1 class="text-primary">Add Category</h1>
+            <h1 class="text-primary">Edit <i class="bi bi-pen-fill"></i></h1>
             <hr />
         </div>
         <div asp-validation-summary="All">
@@ -16,23 +17,23 @@
             <div class="mb-3 row p-1">
                 <label asp-for="CategoryOrder" class="p-0"></label>
                 <input asp-for="CategoryOrder" class="form-control" />
+
                 <span asp-validation-for="CategoryOrder" class="text-danger"></span>
             </div>
 
             <div class="row">
                 <div class="col-6">
-                    <button type="submit" class="btn btn-primary form-control">Create</button>
+                    <button type="submit" class="btn btn-primary form-control"><i class="bi bi-check2-circle"></i> Save</button>
                 </div>
                 <div class="col-6">
                     <a asp-controller="Category" asp-action="GoBack" class="btn btn-secondary btn-outline-dark form-control">Go Back</a>
                 </div>
             </div>
-        </div>        
+        </div>
     </div>
 </form>
-
 @section Scripts{
     @{
-       <partial name="_ValidationScriptsPartial" />
+        <partial name="_ValidationScriptsPartial" />
     }
 }

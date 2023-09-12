@@ -20,5 +20,6 @@ namespace BulkyWeb.Data
                 new Category { ID = 4, Name = "Fantasy", CategoryOrder = 4 }
                 );
         }
+
     }
 }
