@@ -1,8 +1,7 @@
 ﻿namespace BulkyWeb.Repository
 {
-    public interface IUnitOfWork
+    public interface IUnitOfWork : ICategoryRepository
     {
-        public ICategoryRepository CategoryRepository { get; }
         void Save();
     }
 }

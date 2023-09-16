@@ -15,7 +15,7 @@ namespace BulkyWeb.Controllers
         }
         public IActionResult Index()
         {
-            return View(repo.CategoryRepository.GetAll().ToList());
+            return View(repo.GetAll().ToList());
         }
         public IActionResult Create()
         {
@@ -28,7 +28,7 @@ namespace BulkyWeb.Controllers
             {
                 ModelState.AddModelError("Name", "Name and Display order must be unique");
             }
-            foreach (var category in repo.CategoryRepository.GetAll())
+            foreach (var category in repo.GetAll())
             {
                 if (obj.Name != null && obj.Name.ToLower() == category.Name.ToLower())
                 {
@@ -41,7 +41,7 @@ namespace BulkyWeb.Controllers
             }
             if (ModelState.IsValid)
             {
-                repo.CategoryRepository.Add(obj);
+                repo.Add(obj);
                 repo.Save();
                 return RedirectToAction("Index", "Category");
             }
@@ -56,7 +56,7 @@ namespace BulkyWeb.Controllers
         {
             if (searchTerm != null)
             {
-                List<Category> ser = repo.CategoryRepository.Search(u => u.Name == searchTerm).ToList();
+                List<Category> ser = repo.Search(u => u.Name == searchTerm).ToList();
                 return View("Index", ser);
             }
             return RedirectToAction("Index");
@@ -67,7 +67,7 @@ namespace BulkyWeb.Controllers
             {
                 return NotFound();
             }
-            if (repo.CategoryRepository.GetFirstOrDefault(u=>u.ID==id) == null)
+            if (repo.GetFirstOrDefault(u=>u.ID==id) == null)
             {
                 return NotFound();
             }
@@ -82,7 +82,7 @@ namespace BulkyWeb.Controllers
             }
             if (ModelState.IsValid) 
             {
-                repo.CategoryRepository.Update(obj);
+                repo.Update(obj);
                 repo.Save();
                 TempData["Success"] = "Data Updated Successfully";
                 return RedirectToAction("Index");
@@ -96,12 +96,12 @@ namespace BulkyWeb.Controllers
             {
                 return NotFound();
             }
-            Category? catDb = repo.CategoryRepository.GetFirstOrDefault(u => u.ID == id);
+            Category? catDb = repo.GetFirstOrDefault(u => u.ID == id);
             if (catDb == null)
             {
                 return NotFound();
             }
-            repo.CategoryRepository.Remove(catDb);
+            repo.Remove(catDb);
             repo.Save();
             TempData["Success"] = "Deleted Successfully";
             return RedirectToAction("Index");
