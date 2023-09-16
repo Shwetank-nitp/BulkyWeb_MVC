@@ -1,21 +1,21 @@
-﻿using BulkyWeb.Data;
-using BulkyWeb.Models;
+﻿using BulkyWeb.Models.Models;
+using BulkyWeb.Repository;
 using Microsoft.AspNetCore.Mvc;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace BulkyWeb.Controllers
 {
-    public class CategoryController : Controller
+    public class CategoryController :Controller 
     {
-        private ApplicationDbContext _context;
-        public CategoryController(ApplicationDbContext db)
-        {
-            _context = db;
-        }
+        private readonly IUnitOfWork repo;
 
+        public CategoryController(IUnitOfWork repo)
+        {
+            this.repo=repo;
+        }
         public IActionResult Index()
         {
-            List<Category> categories = _context.Categories.ToList();
-            return View(categories);
+            return View(repo.CategoryRepository.GetAll().ToList());
         }
         public IActionResult Create()
         {
@@ -28,7 +28,7 @@ namespace BulkyWeb.Controllers
             {
                 ModelState.AddModelError("Name", "Name and Display order must be unique");
             }
-            foreach (var category in _context.Categories.ToList())
+            foreach (var category in repo.CategoryRepository.GetAll())
             {
                 if (obj.Name != null && obj.Name.ToLower() == category.Name.ToLower())
                 {
@@ -41,8 +41,8 @@ namespace BulkyWeb.Controllers
             }
             if (ModelState.IsValid)
             {
-                _context.Categories.Add(obj);
-                _context.SaveChanges();
+                repo.CategoryRepository.Add(obj);
+                repo.Save();
                 return RedirectToAction("Index", "Category");
             }
             return View(obj);
@@ -56,8 +56,8 @@ namespace BulkyWeb.Controllers
         {
             if (searchTerm != null)
             {
-                List<Category> categories = _context.Categories.Where(c => c.Name.Equals(searchTerm)).ToList();
-                return View("Index", categories);
+                List<Category> ser = repo.CategoryRepository.Search(u => u.Name == searchTerm).ToList();
+                return View("Index", ser);
             }
             return RedirectToAction("Index");
         }
@@ -67,14 +67,14 @@ namespace BulkyWeb.Controllers
             {
                 return NotFound();
             }
-            if (_context.Categories.Find(id) == null)
+            if (repo.CategoryRepository.GetFirstOrDefault(u=>u.ID==id) == null)
             {
                 return NotFound();
             }
             return View();
         }
         [HttpPost]
-        public IActionResult Edit(Category obj,int? id)
+        public IActionResult Edit(Category obj)
         {
             if (obj.Name == obj.CategoryOrder.ToString())
             {
@@ -82,14 +82,10 @@ namespace BulkyWeb.Controllers
             }
             if (ModelState.IsValid) 
             {
-                Category? catDb = _context.Categories.Find(id);
-                if (catDb!=null) 
-                {
-                    catDb.Name=obj.Name;
-                    catDb.CategoryOrder = obj.CategoryOrder;
-                    _context.SaveChanges();
-                    return RedirectToAction("Index");
-                }
+                repo.CategoryRepository.Update(obj);
+                repo.Save();
+                TempData["Success"] = "Data Updated Successfully";
+                return RedirectToAction("Index");
             }
             return View(obj);
         }
@@ -100,13 +96,14 @@ namespace BulkyWeb.Controllers
             {
                 return NotFound();
             }
-            Category? catDb = _context.Categories.Find(id);
+            Category? catDb = repo.CategoryRepository.GetFirstOrDefault(u => u.ID == id);
             if (catDb == null)
             {
                 return NotFound();
             }
-            _context.Categories.Remove(catDb);
-            _context.SaveChanges();
+            repo.CategoryRepository.Remove(catDb);
+            repo.Save();
+            TempData["Success"] = "Deleted Successfully";
             return RedirectToAction("Index");
         }
     }

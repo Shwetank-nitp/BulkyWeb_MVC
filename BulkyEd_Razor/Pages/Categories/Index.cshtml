@@ -1,0 +1,97 @@
+﻿@page
+@model BulkyEd_Razor.Pages.Categories.IndexModel
+@{
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Category</title>
+    <style>
+
+        table {
+            width: 100%; 
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        /* Style for table header */
+        th {
+            background-color: #f2f2f2;
+            text-align: left;
+        }
+
+        /* Style for alternating rows */
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        /* Style for table cells */
+        td, th {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row pt-4">
+            <div class="col-6 text-primary"><h1>Category List</h1></div>
+            <div class="col-6 text-end">
+                <form class="d-flex" method="get" asp-page="Categories/Index">
+                    <input class="form-control me-sm-2" type="search" placeholder="Search" name="searchTerm">
+                    <button class="btn btn-primary my-2 my-sm-0" type="submit">Search</button>
+                </form>
+            </div>
+        </div>
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Category Name</th>
+                    <th>Display Order</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var o in Model.CategoryList.OrderBy(u=>u.CaregoryOrder))
+                {
+                    <tr>
+                        <td>@o.CategoryName</td>
+                        <td>@o.CaregoryOrder</td>
+                        <td>
+                            <div class="w-75 btn-group btn-center" role="group">
+                                <a asp-page="Categories/Edit" class="btn btn-primary mx-2" asp-route-id="@o.ID">
+                                    <i class="bi bi-pencil-square"></i>Edit
+                                </a>
+                                <a asp-Page="Categories/Delete class="btn btn-outline-danger mx-2" asp-route-id="@o.ID">
+                                    <i class="bi bi-trash3-fill"></i>Delete
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        @if (Model.CategoryList.Count == 0)
+        {
+            <h2 class="text-center text-primary">no result found....<i class="bi bi-binoculars"></i></h2>
+        }
+        <div class="row pt-4">
+            <div class="col-6"></div>
+            <div class="col-6 text-end">
+                <a class="container" asp-page="Categories/Create">
+                    <button type="button" class="btn btn-primary"
+                            >
+                        <i class="bi bi-database-add"></i> Add New Data
+                    </button>
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
